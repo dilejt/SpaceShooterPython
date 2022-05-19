@@ -11,12 +11,15 @@ def getStrips(directory=''):
 class Sprite(pygame.sprite.Sprite):
     def __init__(self, x, y, img, width=None, height=None, sound_path=None):
         super().__init__()
+        self.screen_width = 800
+        self.screen_height = 1000
         self.x = x
         self.y = y
-        self.moveUp = True
+        self.speed = 3
+        self.moveUp = False
         self.moveDown = False
         self.moveRight = False
-        self.moveLeft = True
+        self.moveLeft = False
         if img is not None:
             self.image = pygame.image.load(img)
             if width is not None or height is not None:
@@ -26,6 +29,41 @@ class Sprite(pygame.sprite.Sprite):
         if sound_path is not None:
             self.sound = pygame.mixer.Sound(sound_path)
             # self.sound.play()
+
+    def movement(self):
+        if self.moveUp and not self.checkBorderCollision(None, False):
+            if self.moveLeft or self.moveRight:
+                self.y -= (self.speed/3)
+            else:
+                self.y -= self.speed
+        if self.moveDown and not self.checkBorderCollision(None, True):
+            if self.moveLeft or self.moveRight:
+                self.y += (self.speed/3)
+            else:
+                self.y += self.speed
+        if self.moveRight and not self.checkBorderCollision(True, None):
+            if self.moveUp or self.moveDown:
+                self.x += (self.speed/3)
+            else:
+                self.x += self.speed
+        if self.moveLeft and not self.checkBorderCollision(False, None):
+            if self.moveUp or self.moveDown:
+                self.x -= (self.speed/3)
+            else:
+                self.x -= self.speed
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+    def checkBorderCollision(self, x, y):
+        if self.x - self.speed < 0 and x is False:
+            return True
+        elif self.x + self.image.get_width() + self.speed > self.screen_width and x is True:
+            return True
+        elif self.y - self.speed < 0 and y is False:
+            return True
+        elif self.y + self.image.get_height() + self.speed > self.screen_height and y is True:
+            return True
+        return False
 
 
 class AnimatedSprite(Sprite):
@@ -91,21 +129,9 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                if event.type == pygame.KEYDOWN:
-                    # if event.key == pygame.K_ESCAPE:
-                    #     terminate()
-                    if event.key == pygame.K_UP:
-                        self.player.moveUp = True
-                        self.player.moveDown = False
-                    if event.key == pygame.K_DOWN:
-                        self.player.moveUp = False
-                        self.player.moveDown = True
-                    if event.key == pygame.K_LEFT:
-                        self.player.moveRight = False
-                        self.player.moveLeft = True
-                    if event.key == pygame.K_RIGHT:
-                        self.player.moveRight = True
-                        self.player.moveLeft = False
+                # if event.type == pygame.KEYDOWN:
+                #     # if event.key == pygame.K_ESCAPE:
+                #     #     terminate()
 
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_UP:
@@ -116,6 +142,24 @@ class Game:
                         self.player.moveLeft = False
                     if event.key == pygame.K_RIGHT:
                         self.player.moveRight = False
+
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_UP]:
+                self.player.moveUp = True
+                self.player.moveDown = False
+                self.player.movement()
+            if keys[pygame.K_DOWN]:
+                self.player.moveUp = False
+                self.player.moveDown = True
+                self.player.movement()
+            if keys[pygame.K_LEFT]:
+                self.player.moveRight = False
+                self.player.moveLeft = True
+                self.player.movement()
+            if keys[pygame.K_RIGHT]:
+                self.player.moveRight = True
+                self.player.moveLeft = False
+                self.player.movement()
 
                 # rest events
             # rest code
