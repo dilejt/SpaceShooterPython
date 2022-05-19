@@ -33,22 +33,22 @@ class Sprite(pygame.sprite.Sprite):
     def movement(self):
         if self.moveUp and not self.checkBorderCollision(None, False):
             if self.moveLeft or self.moveRight:
-                self.y -= (self.speed/3)
+                self.y -= (self.speed / 3)
             else:
                 self.y -= self.speed
         if self.moveDown and not self.checkBorderCollision(None, True):
             if self.moveLeft or self.moveRight:
-                self.y += (self.speed/3)
+                self.y += (self.speed / 3)
             else:
                 self.y += self.speed
         if self.moveRight and not self.checkBorderCollision(True, None):
             if self.moveUp or self.moveDown:
-                self.x += (self.speed/3)
+                self.x += (self.speed / 3)
             else:
                 self.x += self.speed
         if self.moveLeft and not self.checkBorderCollision(False, None):
             if self.moveUp or self.moveDown:
-                self.x -= (self.speed/3)
+                self.x -= (self.speed / 3)
             else:
                 self.x -= self.speed
         self.rect.x = self.x
@@ -81,12 +81,12 @@ class AnimatedSprite(Sprite):
     def animate(self):
         self.is_animating = True
 
-    def update(self, speed=None):
+    def update(self, animation_speed=None):
         if self.is_animating:
-            if speed is None:
+            if animation_speed is None:
                 self.current += 1 / self.animation_speed_ratio
             else:
-                self.current += 1 / speed
+                self.current += 1 / animation_speed
             if self.infinite and self.current >= len(self.strips):
                 self.current = 0
                 if not self.infinite:
