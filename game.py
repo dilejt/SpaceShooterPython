@@ -26,7 +26,6 @@ class Sprite(pygame.sprite.Sprite):
             self.rect.topleft = [x, y]
         if sound_path is not None:
             self.sound = pygame.mixer.Sound(sound_path)
-            # self.sound.play()
 
     def checkBorderCollision(self, x, y, difference):
         if self.x - difference < 0 and x is False:
@@ -123,12 +122,13 @@ class Beam(Sprite):
         self.beam_width = 6
         self.beam_height = 50
         super().__init__(player.x + player.player_width / 2 - self.beam_width / 2, player.y - self.beam_height, 'beam.png', self.beam_width,
-                         self.beam_height)
+                         self.beam_height, 'beam.mp3')
         self.speed = 12
+        self.sound.play()
 
     def update(self):
         self.rect.y -= self.speed
-        if self.rect.y < 0:
+        if self.rect.y < -self.beam_height:
             self.kill()
 
 
