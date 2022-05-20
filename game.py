@@ -84,6 +84,7 @@ class Player(Sprite):
     def __init__(self):
         super().__init__(Game.screen_width / 2 - self.player_width / 2, Game.screen_height - self.player_height, 'player.png', self.player_width,
                          self.player_height)
+        self.shooting_timer_multiplier = 0
 
     def movement(self):
         if self.moveUp and not self.checkBorderCollision(None, False, self.speed):
@@ -108,6 +109,13 @@ class Player(Sprite):
                 self.x -= self.speed
         self.rect.x = self.x
         self.rect.y = self.y
+
+    def shooting(self, elapsed_time, beam_layer, screen):
+        if elapsed_time - 1000 * self.shooting_timer_multiplier > 1000:
+            self.shooting_timer_multiplier += 1
+            beam_layer.add(Beam(self))
+        beam_layer.update()
+        beam_layer.draw(screen)
 
 
 class Beam(Sprite):
@@ -138,15 +146,12 @@ class Game:
         self.background = AnimatedSprite(0, 0, 'bg', True)
         self.bg_layer.add(self.background)
 
-        self.top_layer = pygame.sprite.Group()
+        self.player_layer = pygame.sprite.Group()
         self.player = Player()
-        self.top_layer.add(self.player)
+        self.player_layer.add(self.player)
 
         self.beam_layer = pygame.sprite.Group()
 
-        self.mainLoop()
-
-    def mainLoop(self):
         elapsed_time = 0
         while True:
             for event in pygame.event.get():
@@ -194,12 +199,7 @@ class Game:
             self.screen.fill((0, 0, 0))
 
             self.bg_layer.draw(self.screen)
-            self.background.update()
-            self.top_layer.draw(self.screen)
+            self.bg_layer.update()
 
-            if elapsed_time >= 1000:
-                beam = Beam(self.player)
-                self.beam_layer.add(beam)
-                elapsed_time = 0
-            self.beam_layer.update()
-            self.beam_layer.draw(self.screen)
+            self.player_layer.draw(self.screen)
+            self.player.shooting(elapsed_time, self.beam_layer, self.screen)
