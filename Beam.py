@@ -8,7 +8,7 @@ class Beam(Sprite):
         super().__init__(player.x + player.player_width / 2 - self.beam_width / 2, player.y - self.beam_height, 'beam.png',
                          self.beam_width,
                          self.beam_height, 'beam.mp3')
-        self.speed = 12
+        self.speed = 25
         self.sound.play()
 
     def update(self):

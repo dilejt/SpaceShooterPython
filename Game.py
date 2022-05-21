@@ -14,11 +14,11 @@ class Game:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption(SCREEN_TITLE)
 
-        self.bg_layer = pygame.sprite.Group()
+        self.bg_layer = pygame.sprite.GroupSingle()
         self.background = AnimatedSprite(0, 0, 'bg', True)
         self.bg_layer.add(self.background)
 
-        self.player_layer = pygame.sprite.Group()
+        self.player_layer = pygame.sprite.GroupSingle()
         self.player = Player()
         self.player_layer.add(self.player)
 
@@ -78,4 +78,13 @@ class Game:
             self.player_layer.draw(self.screen)
             self.player.shooting(elapsed_time, self.beam_layer, self.screen)
 
-            spawnBigEnemy(elapsed_time, self.beam_layer, self.screen)
+            self.big_enemies_layer.draw(self.screen)
+            spawnBigEnemy(elapsed_time, self.big_enemies_layer)
+
+            self.checkCollision()
+
+    def checkCollision(self):
+        if pygame.sprite.groupcollide(self.player_layer, self.big_enemies_layer, False, True):
+            print("-5hp")
+        if pygame.sprite.groupcollide(self.big_enemies_layer, self.beam_layer, True, True):
+            print("+5pkt")
