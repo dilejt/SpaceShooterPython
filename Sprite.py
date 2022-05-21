@@ -14,9 +14,15 @@ class Sprite(pygame.sprite.Sprite):
         self.moveRight = False
         self.moveLeft = False
         if img is not None:
-            self.image = pygame.image.load("assets/pictures/" + img)
+            if '.png' in img:
+                self.image = pygame.image.load("assets/pictures/" + img).convert_alpha()
+            else:
+                self.image = pygame.image.load("assets/pictures/" + img)
             if width is not None or height is not None:
                 self.image = pygame.transform.scale(self.image, (width, height))
+            self.mask = pygame.mask.from_surface(self.image)
+            self.outline = pygame.draw.lines(self.image, (200, 150, 150), True, self.mask.outline())
+            pygame.draw.rect(self.image, (255, 0, 0), [0, 0, width, height], 1)
             self.rect = self.image.get_rect()
             self.rect.topleft = [x, y]
         if sound_file is not None:

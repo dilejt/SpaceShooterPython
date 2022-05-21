@@ -4,14 +4,12 @@ from Sprite import Sprite
 from consts import SCREEN_WIDTH, SCREEN_HEIGHT
 
 
-def spawnBigEnemy(elapsed_time, big_enemies_layer, screen):
-    print(BigEnemy.spawn_rate)
+def spawnBigEnemy(elapsed_time, big_enemies_layer):
     if elapsed_time > BigEnemy.spawn_timer_handler:
         BigEnemy.spawn_rate = random.randint(3000, 6000)
         BigEnemy.spawn_timer_handler += BigEnemy.spawn_rate
         big_enemies_layer.add(BigEnemy())
     big_enemies_layer.update()
-    big_enemies_layer.draw(screen)
 
 
 class BigEnemy(Sprite):
