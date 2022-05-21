@@ -4,13 +4,14 @@ from consts import SCREEN_WIDTH, SCREEN_HEIGHT
 
 
 class Player(Sprite):
-    player_width = 100
-    player_height = 100
+    player_width = 80
+    player_height = 80
 
     def __init__(self):
-        super().__init__(SCREEN_WIDTH / 2 - self.player_width / 2, SCREEN_HEIGHT - self.player_height, 'assets/pictures/player.png', self.player_width,
+        super().__init__(SCREEN_WIDTH / 2 - self.player_width / 2, SCREEN_HEIGHT - self.player_height, 'player.png', self.player_width,
                          self.player_height)
         self.shooting_timer_multiplier = 0
+        self.shooting_rate = 1000
 
     def movement(self):
         if self.moveUp and not self.checkBorderCollision(None, False, self.speed):
@@ -37,7 +38,7 @@ class Player(Sprite):
         self.rect.y = self.y
 
     def shooting(self, elapsed_time, beam_layer, screen):
-        if elapsed_time - 1000 * self.shooting_timer_multiplier > 1000:
+        if elapsed_time - self.shooting_rate * self.shooting_timer_multiplier > self.shooting_rate:
             self.shooting_timer_multiplier += 1
             beam_layer.add(Beam(self))
         beam_layer.update()

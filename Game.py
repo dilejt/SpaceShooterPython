@@ -2,6 +2,7 @@ import sys
 import pygame
 
 from AnimatedSprite import AnimatedSprite
+from BigEnemy import spawnBigEnemy
 from Player import Player
 from consts import SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE
 
@@ -22,6 +23,8 @@ class Game:
         self.player_layer.add(self.player)
 
         self.beam_layer = pygame.sprite.Group()
+
+        self.big_enemies_layer = pygame.sprite.Group()
 
         elapsed_time = 0
         while True:
@@ -74,3 +77,5 @@ class Game:
 
             self.player_layer.draw(self.screen)
             self.player.shooting(elapsed_time, self.beam_layer, self.screen)
+
+            spawnBigEnemy(elapsed_time, self.beam_layer, self.screen)
