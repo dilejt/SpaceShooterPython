@@ -19,11 +19,12 @@ class BigEnemy(Sprite):
     spawn_timer_handler = spawn_rate
 
     def __init__(self):
-        super().__init__(random.randint(0, SCREEN_WIDTH - self.big_enemy_width), -self.big_enemy_height, 'enemy_big.png',
+        super().__init__(random.randint(0, SCREEN_WIDTH - self.big_enemy_width), -self.big_enemy_height + 5, 'enemy_big.png',
                          self.big_enemy_width, self.big_enemy_height)
         self.speed = 1
 
     def update(self):
         self.rect.y += self.speed
-        if self.rect.y > SCREEN_HEIGHT + self.big_enemy_height:
+        if self.rect.y > SCREEN_HEIGHT:
             self.kill()
+            print("-10pkt")

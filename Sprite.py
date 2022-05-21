@@ -18,7 +18,7 @@ class Sprite(pygame.sprite.Sprite):
                 self.image = pygame.image.load("assets/pictures/" + img).convert_alpha()
             else:
                 self.image = pygame.image.load("assets/pictures/" + img)
-            if width is not None or height is not None:
+            if width is not None and height is not None:
                 self.image = pygame.transform.scale(self.image, (width, height))
             self.mask = pygame.mask.from_surface(self.image)
             self.outline = pygame.draw.lines(self.image, (200, 150, 150), True, self.mask.outline())
