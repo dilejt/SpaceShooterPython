@@ -1,3 +1,5 @@
+import pygame.transform
+
 from Beam import Beam
 from Sprite import Sprite
 from consts import SCREEN_WIDTH, SCREEN_HEIGHT
@@ -14,6 +16,8 @@ class Player(Sprite):
         self.shooting_rate = 1000
 
     def movement(self):
+        # transparent
+        # self.image = pygame.transform.laplacian(self.image)
         if self.moveUp and not self.checkBorderCollision(None, False, self.speed):
             if self.moveLeft or self.moveRight:
                 self.y -= (self.speed / 3)
