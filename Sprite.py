@@ -4,7 +4,7 @@ from consts import SCREEN_WIDTH, SCREEN_HEIGHT
 
 
 class Sprite(pygame.sprite.Sprite):
-    def __init__(self, x, y, img, width=None, height=None, sound_path=None):
+    def __init__(self, x, y, img, width=None, height=None, sound_file=None):
         super().__init__()
         self.x = x
         self.y = y
@@ -14,13 +14,13 @@ class Sprite(pygame.sprite.Sprite):
         self.moveRight = False
         self.moveLeft = False
         if img is not None:
-            self.image = pygame.image.load(img)
+            self.image = pygame.image.load("assets/pictures/" + img)
             if width is not None or height is not None:
                 self.image = pygame.transform.scale(self.image, (width, height))
             self.rect = self.image.get_rect()
             self.rect.topleft = [x, y]
-        if sound_path is not None:
-            self.sound = pygame.mixer.Sound(sound_path)
+        if sound_file is not None:
+            self.sound = pygame.mixer.Sound("assets/sounds/" + sound_file)
 
     def checkBorderCollision(self, x, y, difference):
         if self.x - difference < 0 and x is False:
