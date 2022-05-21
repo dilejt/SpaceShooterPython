@@ -2,7 +2,7 @@ import sys
 import pygame
 
 from AnimatedSprite import AnimatedSprite
-from BigEnemy import BigEnemy
+from BigEnemy import spawnBigEnemy
 from Player import Player
 from consts import SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE
 
@@ -24,10 +24,9 @@ class Game:
 
         self.beam_layer = pygame.sprite.Group()
 
-        self.enemies_layer = pygame.sprite.Group()
+        self.big_enemies_layer = pygame.sprite.Group()
 
         elapsed_time = 0
-        spawn_timer_multiplier = 0
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -79,8 +78,4 @@ class Game:
             self.player_layer.draw(self.screen)
             self.player.shooting(elapsed_time, self.beam_layer, self.screen)
 
-            if elapsed_time - 2000 * spawn_timer_multiplier > 2000:
-                spawn_timer_multiplier += 1
-                self.enemies_layer.add(BigEnemy())
-            self.enemies_layer.update()
-            self.enemies_layer.draw(self.screen)
+            spawnBigEnemy(elapsed_time, self.beam_layer, self.screen)
