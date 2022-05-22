@@ -7,6 +7,7 @@ from Explosion import Explosion
 from Gui import Gui
 from HealthBar import HealthBar
 from Player import Player
+from Timer import Timer
 from consts import SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE
 
 
@@ -38,6 +39,8 @@ class Game:
         self.hp_layer = pygame.sprite.GroupSingle()
         self.hp_bar = HealthBar(self.player)
         self.hp_layer.add(self.hp_bar)
+
+        self.timer = Timer()
 
         elapsed_time = 0
         while True:
@@ -101,6 +104,8 @@ class Game:
 
             self.hp_layer.draw(self.screen)
             self.hp_layer.update()
+
+            self.timer.update(elapsed_time, self.screen)
 
             self.checkCollision()
 
