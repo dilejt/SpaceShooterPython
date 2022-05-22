@@ -2,7 +2,7 @@ import pygame.transform
 
 from Beam import Beam
 from Sprite import Sprite
-from consts import SCREEN_WIDTH, SCREEN_HEIGHT
+from consts import SCREEN_WIDTH, SCREEN_HEIGHT, GUI_HEIGHT
 
 
 class Player(Sprite):
@@ -10,10 +10,11 @@ class Player(Sprite):
     player_height = 80
 
     def __init__(self):
-        super().__init__(SCREEN_WIDTH / 2 - self.player_width / 2, SCREEN_HEIGHT - self.player_height, 'player.png', self.player_width,
-                         self.player_height)
+        super().__init__(SCREEN_WIDTH / 2 - self.player_width / 2, SCREEN_HEIGHT - self.player_height - GUI_HEIGHT, 'player.png',
+                         self.player_width, self.player_height)
         self.shooting_timer_multiplier = 0
         self.shooting_rate = 1000
+        self.hp = 20
 
     def movement(self):
         # transparent
