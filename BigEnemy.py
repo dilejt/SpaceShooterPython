@@ -1,13 +1,12 @@
 import random
 
-from HealthBar import HealthBar
 from Sprite import Sprite
 from consts import SCREEN_WIDTH, SCREEN_HEIGHT, GUI_HEIGHT
 
 
 def spawnBigEnemy(elapsed_time, big_enemies_layer, player, hp_bar):
     if elapsed_time > BigEnemy.spawn_timer_handler:
-        BigEnemy.spawn_rate = random.randint(3000, 6000)
+        BigEnemy.spawn_rate = random.randint(4000, 6000)
         BigEnemy.spawn_timer_handler += BigEnemy.spawn_rate
         big_enemies_layer.add(BigEnemy(player, hp_bar))
     big_enemies_layer.update()

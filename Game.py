@@ -8,6 +8,7 @@ from Gui import Gui
 from HealthBar import HealthBar
 from Player import Player
 from Score import Score
+from SmallEnemy import spawnSmallEnemy
 from Timer import Timer
 from consts import SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE
 
@@ -32,6 +33,8 @@ class Game:
         self.explosion_layer = pygame.sprite.Group()
 
         self.big_enemies_layer = pygame.sprite.Group()
+
+        self.small_enemies_layer = pygame.sprite.Group()
 
         self.gui_layer = pygame.sprite.GroupSingle()
         self.gui = Gui()
@@ -105,6 +108,9 @@ class Game:
             self.big_enemies_layer.draw(self.screen)
             spawnBigEnemy(elapsed_time, self.big_enemies_layer, self.player, self.hp_bar)
 
+            self.small_enemies_layer.draw(self.screen)
+            spawnSmallEnemy(elapsed_time, self.small_enemies_layer, self.player, self.hp_bar)
+
             self.explosion_layer.draw(self.screen)
             self.explosion_layer.update(3)
 
@@ -122,16 +128,25 @@ class Game:
     def checkCollision(self):
         is_big_enemy_collide_with_player = pygame.sprite.groupcollide(self.big_enemies_layer, self.player_layer, True, False)
         if is_big_enemy_collide_with_player:
-            rect = list(is_big_enemy_collide_with_player.keys())[0].rect
-            explosion = Explosion(rect.x + Explosion.explosion_width / 2, rect.y + Explosion.explosion_height / 2)
-            self.explosion_layer.add(explosion)
-            explosion.animate()
+            self.createExplosion(is_big_enemy_collide_with_player)
             self.hp_bar.hp_diff += -3
             self.score.points += 2
         is_big_enemy_collide_with_beam = pygame.sprite.groupcollide(self.big_enemies_layer, self.beam_layer, True, True)
         if is_big_enemy_collide_with_beam:
-            rect = list(is_big_enemy_collide_with_beam.keys())[0].rect
-            explosion = Explosion(rect.x + Explosion.explosion_width / 2, rect.y + Explosion.explosion_height / 2)
-            self.explosion_layer.add(explosion)
-            explosion.animate()
+            self.createExplosion(is_big_enemy_collide_with_beam)
             self.score.points += 5
+        is_small_enemy_collide_with_player = pygame.sprite.groupcollide(self.small_enemies_layer, self.player_layer, True, False)
+        if is_small_enemy_collide_with_player:
+            self.createExplosion(is_small_enemy_collide_with_player)
+            self.hp_bar.hp_diff += -2
+            self.score.points += 1
+        is_small_enemy_collide_with_beam = pygame.sprite.groupcollide(self.small_enemies_layer, self.beam_layer, True, True)
+        if is_small_enemy_collide_with_beam:
+            self.createExplosion(is_small_enemy_collide_with_beam)
+            self.score.points += 2
+
+    def createExplosion(self, collision_type):
+        rect = list(collision_type.keys())[0].rect
+        explosion = Explosion(rect.x + rect.width / 2, rect.y + rect.height / 2, rect.width)
+        self.explosion_layer.add(explosion)
+        explosion.animate()
