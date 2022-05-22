@@ -7,6 +7,7 @@ from Explosion import Explosion
 from Gui import Gui
 from HealthBar import HealthBar
 from Player import Player
+from Score import Score
 from Timer import Timer
 from consts import SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE
 
@@ -14,7 +15,7 @@ from consts import SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE
 class Game:
     def __init__(self):
         pygame.init()
-        self.clock = pygame.time.Clock()
+
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption(SCREEN_TITLE)
 
@@ -41,8 +42,14 @@ class Game:
         self.hp_layer.add(self.hp_bar)
 
         self.timer = Timer()
+        self.score = Score()
 
+        self.ADD_TIME_POINTS = pygame.USEREVENT + 41
+
+        self.clock = pygame.time.Clock()
         elapsed_time = 0
+        pygame.time.set_timer(self.ADD_TIME_POINTS, 1000)
+
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -51,7 +58,6 @@ class Game:
                 # if event.type == pygame.KEYDOWN:
                 #     # if event.key == pygame.K_ESCAPE:
                 #     #     terminate()
-
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_UP:
                         self.player.moveUp = False
@@ -61,6 +67,8 @@ class Game:
                         self.player.moveLeft = False
                     if event.key == pygame.K_RIGHT:
                         self.player.moveRight = False
+                if event.type == self.ADD_TIME_POINTS:
+                    self.score.points += 10
 
             keys = pygame.key.get_pressed()
             if keys[pygame.K_UP]:
@@ -107,6 +115,8 @@ class Game:
 
             self.timer.update(elapsed_time, self.screen)
 
+            self.score.update(self.screen)
+
             self.checkCollision()
 
     def checkCollision(self):
@@ -117,10 +127,11 @@ class Game:
             self.explosion_layer.add(explosion)
             explosion.animate()
             self.hp_bar.hp_diff += -3
+            self.score.points += 2
         is_big_enemy_collide_with_beam = pygame.sprite.groupcollide(self.big_enemies_layer, self.beam_layer, True, True)
         if is_big_enemy_collide_with_beam:
             rect = list(is_big_enemy_collide_with_beam.keys())[0].rect
             explosion = Explosion(rect.x + Explosion.explosion_width / 2, rect.y + Explosion.explosion_height / 2)
             self.explosion_layer.add(explosion)
             explosion.animate()
-            print("+5pkt")
+            self.score.points += 5
