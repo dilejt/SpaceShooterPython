@@ -91,8 +91,6 @@ class Game:
                 self.player.moveLeft = False
                 self.player.movement()
 
-                # rest events
-            # rest code
             dt = self.clock.tick(60)
             elapsed_time += dt
 
