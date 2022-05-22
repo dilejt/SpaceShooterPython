@@ -1,6 +1,6 @@
 import pygame
 
-from consts import SCREEN_WIDTH, SCREEN_HEIGHT
+from consts import SCREEN_WIDTH, SCREEN_HEIGHT, GUI_HEIGHT
 
 
 class Sprite(pygame.sprite.Sprite):
@@ -35,6 +35,6 @@ class Sprite(pygame.sprite.Sprite):
             return True
         elif self.y - difference < 0 and y is False:
             return True
-        elif self.y + self.image.get_height() + difference > SCREEN_HEIGHT and y is True:
+        elif self.y + self.image.get_height() + difference > SCREEN_HEIGHT - GUI_HEIGHT and y is True:
             return True
         return False

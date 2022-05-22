@@ -4,6 +4,8 @@ import pygame
 from AnimatedSprite import AnimatedSprite
 from BigEnemy import spawnBigEnemy
 from Explosion import Explosion
+from Gui import Gui
+from HealthBar import HealthBar
 from Player import Player
 from consts import SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE
 
@@ -28,6 +30,14 @@ class Game:
         self.explosion_layer = pygame.sprite.Group()
 
         self.big_enemies_layer = pygame.sprite.Group()
+
+        self.gui_layer = pygame.sprite.GroupSingle()
+        self.gui = Gui()
+        self.gui_layer.add(self.gui)
+
+        self.hp_layer = pygame.sprite.GroupSingle()
+        self.hp_bar = HealthBar(self.player)
+        self.hp_layer.add(self.hp_bar)
 
         elapsed_time = 0
         while True:
@@ -82,10 +92,15 @@ class Game:
             self.player.shooting(elapsed_time, self.beam_layer, self.screen)
 
             self.big_enemies_layer.draw(self.screen)
-            spawnBigEnemy(elapsed_time, self.big_enemies_layer)
+            spawnBigEnemy(elapsed_time, self.big_enemies_layer, self.player, self.hp_bar)
 
             self.explosion_layer.draw(self.screen)
             self.explosion_layer.update(3)
+
+            self.gui_layer.draw(self.screen)
+
+            self.hp_layer.draw(self.screen)
+            self.hp_layer.update()
 
             self.checkCollision()
 
@@ -96,7 +111,7 @@ class Game:
             explosion = Explosion(rect.x + Explosion.explosion_width / 2, rect.y + Explosion.explosion_height / 2)
             self.explosion_layer.add(explosion)
             explosion.animate()
-            print("-5hp")
+            self.hp_bar.hp_diff += -3
         is_big_enemy_collide_with_beam = pygame.sprite.groupcollide(self.big_enemies_layer, self.beam_layer, True, True)
         if is_big_enemy_collide_with_beam:
             rect = list(is_big_enemy_collide_with_beam.keys())[0].rect
