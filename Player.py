@@ -2,7 +2,7 @@ import pygame.transform
 
 from Beam import Beam
 from Sprite import Sprite
-from consts import SCREEN_WIDTH, SCREEN_HEIGHT, GUI_HEIGHT
+from consts import SCREEN_WIDTH, SCREEN_HEIGHT, GUI_HEIGHT, INIT_HP
 
 
 class Player(Sprite):
@@ -14,7 +14,18 @@ class Player(Sprite):
                          self.player_width, self.player_height)
         self.shooting_timer_multiplier = 0
         self.shooting_rate = 1000
-        self.hp = 20
+        self.__hp = INIT_HP
+
+    @property
+    def hp(self):
+        return self.__hp
+
+    @hp.setter
+    def hp(self, hp):
+        if hp <= INIT_HP:
+            self.__hp = hp
+        else:
+            self.__hp = INIT_HP
 
     def movement(self):
         # transparent
