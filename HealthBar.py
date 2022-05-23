@@ -1,7 +1,7 @@
 import pygame
 
 from AnimatedSprite import AnimatedSprite
-from consts import SCREEN_WIDTH, SCREEN_HEIGHT
+from consts import SCREEN_WIDTH, SCREEN_HEIGHT, INIT_HP
 
 
 class HealthBar(AnimatedSprite):
@@ -22,6 +22,9 @@ class HealthBar(AnimatedSprite):
                 self.hp_diff += (1 / animation_speed)
                 self.current -= (1 / animation_speed)
             elif self.hp_diff > 0:
+                if self.player.hp >= INIT_HP:
+                    self.hp_diff = 0
+                    return
                 self.hp_diff -= (1 / animation_speed)
                 self.current += (1 / animation_speed)
             self.player.hp = int(self.current)

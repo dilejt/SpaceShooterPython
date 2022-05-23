@@ -33,7 +33,7 @@ class Game:
 
         self.explosion_layer = pygame.sprite.Group()
 
-        self.first_aid_layer = pygame.sprite.Group()
+        self.first_aid_layer = pygame.sprite.GroupSingle()
 
         self.big_enemies_layer = pygame.sprite.Group()
 
@@ -107,7 +107,7 @@ class Game:
             self.player.shooting(elapsed_time, self.beam_layer, self.screen)
 
             self.first_aid_layer.draw(self.screen)
-            spawnFirstAid(elapsed_time, self.first_aid_layer)
+            spawnFirstAid(elapsed_time, self.first_aid_layer, self.player.hp)
 
             self.big_enemies_layer.draw(self.screen)
             spawnBigEnemy(elapsed_time, self.big_enemies_layer, self.player, self.hp_bar)
