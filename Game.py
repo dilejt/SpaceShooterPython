@@ -4,6 +4,7 @@ import pygame
 from AnimatedSprite import AnimatedSprite
 from BigEnemy import spawnBigEnemy
 from Explosion import Explosion
+from FirstAid import spawnFirstAid
 from Gui import Gui
 from HealthBar import HealthBar
 from Player import Player
@@ -31,6 +32,8 @@ class Game:
         self.beam_layer = pygame.sprite.Group()
 
         self.explosion_layer = pygame.sprite.Group()
+
+        self.first_aid_layer = pygame.sprite.Group()
 
         self.big_enemies_layer = pygame.sprite.Group()
 
@@ -103,6 +106,9 @@ class Game:
             self.player_layer.draw(self.screen)
             self.player.shooting(elapsed_time, self.beam_layer, self.screen)
 
+            self.first_aid_layer.draw(self.screen)
+            spawnFirstAid(elapsed_time, self.first_aid_layer)
+
             self.big_enemies_layer.draw(self.screen)
             spawnBigEnemy(elapsed_time, self.big_enemies_layer, self.player, self.hp_bar)
 
@@ -142,6 +148,10 @@ class Game:
         if is_small_enemy_collide_with_beam:
             self.createExplosion(is_small_enemy_collide_with_beam)
             self.score.points += 2
+        is_first_aid_collide_with_player = pygame.sprite.groupcollide(self.first_aid_layer, self.player_layer, True, False)
+        if is_first_aid_collide_with_player:
+            self.hp_bar.hp_diff += 5
+            self.score.points += 5
 
     def createExplosion(self, collision_type):
         rect = list(collision_type.keys())[0].rect
