@@ -1,5 +1,7 @@
 import random
 
+import pygame
+
 from Sprite import Sprite
 from consts import SCREEN_WIDTH, SCREEN_HEIGHT, GUI_HEIGHT
 
@@ -22,11 +24,23 @@ class BigEnemy(Sprite):
         super().__init__(random.randint(0, SCREEN_WIDTH - self.big_enemy_width), -self.big_enemy_height + 5, 'enemy_big.png',
                          self.big_enemy_width, self.big_enemy_height)
         self.speed = 1
+        self.hp = 2
         self.player = player
         self.hp_bar = hp_bar
+        self.original_image = self.image.copy()
+        self.damaged_elapsed_time_handler = 0
 
     def update(self):
         self.rect.y += self.speed
         if self.rect.y > SCREEN_HEIGHT - GUI_HEIGHT:
             self.kill()
             self.hp_bar.hp_diff += -5
+
+    def is_damaged(self, is_damaged, elapsed_time):
+        if is_damaged:
+            self.image.fill((255, 128, 128), None, pygame.BLEND_RGBA_MULT)
+            self.damaged_elapsed_time_handler = elapsed_time
+        else:
+            if self.damaged_elapsed_time_handler + 150 < elapsed_time and not self.damaged_elapsed_time_handler == 0:
+                self.damaged_elapsed_time_handler = 0
+                self.image = self.original_image

@@ -23,6 +23,8 @@ class Sprite(pygame.sprite.Sprite):
             self.mask = pygame.mask.from_surface(self.image)
             self.outline = pygame.draw.lines(self.image, (200, 150, 150), True, self.mask.outline())
             # pygame.draw.rect(self.image, (255, 0, 0), [0, 0, width, height], 1)
+            # all colored
+            # pygame.draw.polygon(self.image, (pygame.Color(123, 123, 123, 128)), self.mask.outline(), 0)
             self.rect = self.image.get_rect()
             self.rect.topleft = [x, y]
         if sound_file is not None:

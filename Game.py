@@ -2,7 +2,7 @@ import sys
 import pygame
 
 from AnimatedSprite import AnimatedSprite
-from BigEnemy import spawnBigEnemy
+from BigEnemy import spawnBigEnemy, BigEnemy
 from Explosion import Explosion
 from FirstAid import spawnFirstAid
 from Gui import Gui
@@ -53,7 +53,7 @@ class Game:
         self.ADD_TIME_POINTS = pygame.USEREVENT + 41
 
         self.clock = pygame.time.Clock()
-        elapsed_time = 0
+        self.elapsed_time = 0
         pygame.time.set_timer(self.ADD_TIME_POINTS, 1000)
 
         while True:
@@ -95,7 +95,7 @@ class Game:
                 self.player.movement()
 
             dt = self.clock.tick(60)
-            elapsed_time += dt
+            self.elapsed_time += dt
 
             pygame.display.flip()
             self.screen.fill((0, 0, 0))
@@ -104,16 +104,18 @@ class Game:
             self.bg_layer.update(4)
 
             self.player_layer.draw(self.screen)
-            self.player.shooting(elapsed_time, self.beam_layer, self.screen)
+            self.player.shooting(self.elapsed_time, self.beam_layer, self.screen)
 
             self.first_aid_layer.draw(self.screen)
-            spawnFirstAid(elapsed_time, self.first_aid_layer, self.player.hp)
+            spawnFirstAid(self.elapsed_time, self.first_aid_layer, self.player.hp)
 
             self.big_enemies_layer.draw(self.screen)
-            spawnBigEnemy(elapsed_time, self.big_enemies_layer, self.player, self.hp_bar)
+            spawnBigEnemy(self.elapsed_time, self.big_enemies_layer, self.player, self.hp_bar)
+            for sprite in self.big_enemies_layer.sprites():
+                sprite.is_damaged(False, self.elapsed_time)
 
             self.small_enemies_layer.draw(self.screen)
-            spawnSmallEnemy(elapsed_time, self.small_enemies_layer, self.player, self.hp_bar)
+            spawnSmallEnemy(self.elapsed_time, self.small_enemies_layer, self.player, self.hp_bar)
 
             self.explosion_layer.draw(self.screen)
             self.explosion_layer.update(3)
@@ -123,7 +125,7 @@ class Game:
             self.hp_layer.draw(self.screen)
             self.hp_layer.update()
 
-            self.timer.update(elapsed_time, self.screen)
+            self.timer.update(self.elapsed_time, self.screen)
 
             self.score.update(self.screen)
 
@@ -135,10 +137,16 @@ class Game:
             self.createExplosion(is_big_enemy_collide_with_player)
             self.hp_bar.hp_diff += -3
             self.score.points += 2
-        is_big_enemy_collide_with_beam = pygame.sprite.groupcollide(self.big_enemies_layer, self.beam_layer, True, True)
+        is_big_enemy_collide_with_beam = pygame.sprite.groupcollide(self.big_enemies_layer, self.beam_layer, False, True)
         if is_big_enemy_collide_with_beam:
-            self.createExplosion(is_big_enemy_collide_with_beam)
-            self.score.points += 5
+            big_enemy_target = list(is_big_enemy_collide_with_beam.keys())[0]
+            if big_enemy_target.hp > 1:
+                big_enemy_target.hp -= 1
+                big_enemy_target.is_damaged(True, self.elapsed_time)
+            else:
+                self.createExplosion(is_big_enemy_collide_with_beam)
+                self.score.points += 5
+                big_enemy_target.kill()
         is_small_enemy_collide_with_player = pygame.sprite.groupcollide(self.small_enemies_layer, self.player_layer, True, False)
         if is_small_enemy_collide_with_player:
             self.createExplosion(is_small_enemy_collide_with_player)
